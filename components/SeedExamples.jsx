@@ -23,6 +23,10 @@ export default function SeedExamples() {
   const [loading, setLoading] = useState(false);
 
   async function seed() {
+    if (loading) {
+      return;
+    }
+
     setLoading(true);
 
     for (const example of examples) {
@@ -46,4 +50,3 @@ export default function SeedExamples() {
     </button>
   );
 }
-
