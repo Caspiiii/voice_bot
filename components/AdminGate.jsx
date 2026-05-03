@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function AdminGate({ children }) {
@@ -61,9 +62,14 @@ export default function AdminGate({ children }) {
             />
           </div>
           {error ? <p className="errorLine">{error}</p> : null}
-          <button className="primaryButton" type="submit">
-            Log in
-          </button>
+          <div className="loginActions">
+            <button className="primaryButton" type="submit">
+              Log in as admin
+            </button>
+            <Link className="ghostButton" href="/customer">
+              I am a customer
+            </Link>
+          </div>
         </form>
       </main>
     );
@@ -71,4 +77,3 @@ export default function AdminGate({ children }) {
 
   return children;
 }
-

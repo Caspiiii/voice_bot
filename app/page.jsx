@@ -10,11 +10,15 @@ export default function HomePage() {
           Add knowledge, test questions, and use the answer API as the core
           endpoint for the voice layer.
         </p>
-        <Link className="primaryButton" href="/admin">
-          Open admin
-        </Link>
+        <div className="topActions">
+          <Link className="primaryButton" href="/customer">
+            Start chat
+          </Link>
+          <Link className="ghostButton" href="/admin">
+            Open admin
+          </Link>
+        </div>
       </section>
     </main>
   );
 }
-
