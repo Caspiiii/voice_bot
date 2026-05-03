@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { isAdminRequest } from "@/lib/auth";
-import { embedText, createAnswer } from "@/lib/openai";
-import { getSupabaseAdmin, toVectorLiteral } from "@/lib/supabase";
+import { answerQuestion } from "@/lib/rag";
 import { cleanString, readJson } from "@/lib/validation";
 
 export async function POST(request) {
@@ -12,34 +11,24 @@ export async function POST(request) {
     return NextResponse.json({ error: "Question is required" }, { status: 400 });
   }
 
-  const questionEmbedding = await embedText(question);
-  const { data: entries, error } = await getSupabaseAdmin().rpc(
-    "match_knowledge_entries",
-    {
-      query_embedding: toVectorLiteral(questionEmbedding),
-      match_count: body.matchCount || 5,
-      match_threshold: body.matchThreshold || 0.15
-    }
-  );
+  let result;
 
-  if (error) {
+  try {
+    result = await answerQuestion({
+      question,
+      matchCount: body.matchCount || 5,
+      matchThreshold: body.matchThreshold || 0.15
+    });
+  } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  if (!entries?.length) {
-    return NextResponse.json({
-      answer: "I don't know that yet, but I can take a message.",
-      retrieved_entries: []
-    });
-  }
-
-  const answer = await createAnswer({ question, entries });
   const includeSources = body.includeSources && (await isAdminRequest(request));
 
   return NextResponse.json({
-    answer,
+    answer: result.answer,
     retrieved_entries: includeSources
-      ? entries.map((entry) => ({
+      ? result.retrievedEntries.map((entry) => ({
           id: entry.id,
           title: entry.title,
           content: entry.content,
@@ -48,4 +37,3 @@ export async function POST(request) {
       : undefined
   });
 }
-

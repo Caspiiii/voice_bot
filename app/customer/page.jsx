@@ -1,5 +1,5 @@
 import Link from "next/link";
-import CustomerChat from "@/components/CustomerChat";
+import CustomerExperience from "@/components/CustomerExperience";
 
 export default function CustomerPage() {
   return (
@@ -13,8 +13,7 @@ export default function CustomerPage() {
           Admin
         </Link>
       </header>
-      <CustomerChat />
+      <CustomerExperience />
     </main>
   );
 }
-

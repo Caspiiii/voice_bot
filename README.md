@@ -44,3 +44,32 @@ curl -X POST http://localhost:3000/api/answer ^
   -H "content-type: application/json" ^
   -d "{\"question\":\"When are you open until?\"}"
 ```
+
+## Vapi web voice setup
+
+The `/customer` page has a Talk mode powered by the Vapi Web SDK. Configure these values in Railway:
+
+```bash
+NEXT_PUBLIC_VAPI_PUBLIC_KEY=your-vapi-public-key
+NEXT_PUBLIC_VAPI_ASSISTANT_ID=your-vapi-assistant-id
+VAPI_TOOL_SECRET=your-tool-secret
+```
+
+Create a Vapi server-based custom tool:
+
+```text
+Name: answer_question
+Description: Use this for every customer question. It answers only from the company's knowledge base.
+Parameter: question, string, required
+Server URL: https://your-railway-domain/api/vapi/tool
+Header: x-vapi-tool-secret: your-tool-secret
+```
+
+Assistant instruction:
+
+```text
+For customer questions, call answer_question with the user's exact question.
+Say the tool result naturally and briefly.
+Do not answer from general knowledge.
+If the tool says it does not know, offer to take a message.
+```
